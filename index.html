@@ -92,4 +92,131 @@
 
         button {
             font-family: 'Galmuri14', sans-serif;
-            background: var(--
+            background: var(--bar-color); /* 상단바와 같은 색 */
+            border: none;
+            border-radius: 8px; /* 둥근 모서리 */
+            padding: 6px 10px;
+            font-size: 11px; /* 글자 크기 축소 */
+            color: #555;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background-color: #e0e0e0;
+        }
+
+        /* 버튼 눌렀을 때 / 활성화 상태 */
+        button:active, button.active-btn {
+            background-color: #d1d1d1;
+            color: #000;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="window">
+        <div class="title-bar">
+            <div class="traffic-lights">
+                <div class="dot red"></div>
+                <div class="dot yellow"></div>
+                <div class="dot green"></div>
+            </div>
+            <div class="refresh-btn" onclick="location.reload()">↻</div>
+        </div>
+        <div class="content">
+            <div class="timer-display" id="timer">00 : 00</div>
+            <div class="btn-group">
+                <button id="btn-start" onclick="startTimer()">start</button>
+                <button id="btn-stop" onclick="stopTimer()">stop</button>
+                <button id="btn-reset" onclick="resetTimer()">reset</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let startTime = 0;
+        let elapsedTime = 0;
+        let timerInterval;
+        let isRunning = false;
+
+        const timerDisplay = document.getElementById('timer');
+        const btnStart = document.getElementById('btn-start');
+        const btnStop = document.getElementById('btn-stop');
+
+        // 페이지 로드 시 상태 복구
+        window.onload = function() {
+            const savedElapsed = localStorage.getItem('miniTimerElapsed');
+            const savedIsRunning = localStorage.getItem('miniTimerRunning');
+            const savedStartTime = localStorage.getItem('miniTimerStart');
+
+            if (savedElapsed) elapsedTime = parseInt(savedElapsed);
+
+            if (savedIsRunning === 'true' && savedStartTime) {
+                startTime = parseInt(savedStartTime);
+                isRunning = true;
+                timerInterval = setInterval(updateTime, 100);
+                btnStart.classList.add('active-btn');
+            } else {
+                displayTime(elapsedTime);
+            }
+        };
+
+        function startTimer() {
+            if (isRunning) return;
+            isRunning = true;
+            startTime = Date.now() - elapsedTime;
+            timerInterval = setInterval(updateTime, 100);
+            saveState();
+            
+            btnStart.classList.add('active-btn');
+            btnStop.classList.remove('active-btn');
+        }
+
+        function stopTimer() {
+            if (!isRunning) return;
+            isRunning = false;
+            clearInterval(timerInterval);
+            saveState();
+
+            btnStart.classList.remove('active-btn');
+            btnStop.classList.add('active-btn');
+            setTimeout(() => btnStop.classList.remove('active-btn'), 200);
+        }
+
+        function resetTimer() {
+            stopTimer();
+            elapsedTime = 0;
+            displayTime(0);
+            localStorage.removeItem('miniTimerElapsed');
+            localStorage.removeItem('miniTimerRunning');
+            localStorage.removeItem('miniTimerStart');
+        }
+
+        function updateTime() {
+            const now = Date.now();
+            elapsedTime = now - startTime;
+            displayTime(elapsedTime);
+            saveState();
+        }
+
+        function displayTime(time) {
+            const totalSeconds = Math.floor(time / 1000);
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            
+            const mm = String(minutes).padStart(2, '0');
+            const ss = String(seconds).padStart(2, '0');
+            
+            timerDisplay.innerText = `${mm} : ${ss}`;
+        }
+
+        function saveState() {
+            localStorage.setItem('miniTimerElapsed', elapsedTime);
+            localStorage.setItem('miniTimerRunning', isRunning);
+            localStorage.setItem('miniTimerStart', startTime);
+        }
+    </script>
+</body>
+</html>
