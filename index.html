@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mini Study Timer</title>
+    <title>Medium Study Timer</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/galmuri@latest/dist/galmuri.css">
     <style>
         :root {
             --bg-color: #ffffff;
-            --bar-color: #f0f0f0; /* 상단바 & 버튼 색상 통일 */
-            --border-color: #e0e0e0; /* 연한 테두리 */
+            --bar-color: #f0f0f0;
+            --border-color: #e0e0e0;
             --text-color: #333;
         }
 
@@ -25,59 +25,56 @@
             user-select: none;
         }
 
-        /* 윈도우 창 디자인 */
+        /* 윈도우 창 (1.5배 확대: 180px -> 270px) */
         .window {
-            width: 180px; /* 기존 320px -> 180px로 축소 */
+            width: 270px;
             background: var(--bg-color);
             border: 1px solid var(--border-color);
-            border-radius: 12px; /* D-Day 위젯처럼 둥글게 */
-            /* 부드러운 그림자 효과 */
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); 
+            border-radius: 16px; /* 모서리 곡률도 조정 */
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
             overflow: hidden;
             display: flex;
             flex-direction: column;
         }
 
-        /* 상단 바 */
+        /* 상단 바 (높이 확대: 24px -> 36px) */
         .title-bar {
-            height: 24px;
+            height: 36px;
             background: var(--bar-color);
-            /* 하단 경계선 제거 (D-Day 위젯 느낌) */
-            /* border-bottom: 1px solid var(--border-color); */
             display: flex;
             align-items: center;
-            padding: 0 8px;
+            padding: 0 12px;
             justify-content: space-between;
         }
 
         .traffic-lights {
             display: flex;
-            gap: 5px;
+            gap: 8px;
         }
 
-        /* 신호등 크기도 축소 */
-        .dot { width: 8px; height: 8px; border-radius: 50%; }
+        /* 신호등 크기 확대 (8px -> 12px) */
+        .dot { width: 12px; height: 12px; border-radius: 50%; }
         .red { background-color: #ff5f57; }
         .yellow { background-color: #ffbd2e; }
         .green { background-color: #27c93f; }
 
         .refresh-btn {
             cursor: pointer;
-            font-size: 12px;
+            font-size: 16px;
             color: #888;
         }
 
         /* 내용 영역 */
         .content {
-            padding: 15px 10px;
+            padding: 20px 10px;
             text-align: center;
             background: #fff;
         }
 
-        /* 타이머 텍스트 */
+        /* 타이머 텍스트 (36px -> 54px) */
         .timer-display {
-            font-size: 36px; /* 폰트 크기 절반 축소 */
-            margin: 5px 0 15px 0;
+            font-size: 54px;
+            margin: 5px 0 20px 0;
             color: #333;
             letter-spacing: 1px;
             font-weight: normal;
@@ -87,16 +84,16 @@
         .btn-group {
             display: flex;
             justify-content: center;
-            gap: 6px;
+            gap: 10px;
         }
 
         button {
             font-family: 'Galmuri14', sans-serif;
-            background: var(--bar-color); /* 상단바와 같은 색 */
+            background: var(--bar-color);
             border: none;
-            border-radius: 8px; /* 둥근 모서리 */
-            padding: 6px 10px;
-            font-size: 11px; /* 글자 크기 축소 */
+            border-radius: 10px;
+            padding: 10px 16px; /* 패딩 확대 */
+            font-size: 16px;    /* 글자 크기 확대 */
             color: #555;
             cursor: pointer;
             transition: all 0.2s;
@@ -106,7 +103,6 @@
             background-color: #e0e0e0;
         }
 
-        /* 버튼 눌렀을 때 / 활성화 상태 */
         button:active, button.active-btn {
             background-color: #d1d1d1;
             color: #000;
@@ -145,11 +141,15 @@
         const btnStart = document.getElementById('btn-start');
         const btnStop = document.getElementById('btn-stop');
 
-        // 페이지 로드 시 상태 복구
+        // 상태 저장 키 이름 변경 (크기 변경 시 기존 데이터 꼬임 방지)
+        const STORAGE_KEY_ELAPSED = 'mediumTimerElapsed';
+        const STORAGE_KEY_RUNNING = 'mediumTimerRunning';
+        const STORAGE_KEY_START = 'mediumTimerStart';
+
         window.onload = function() {
-            const savedElapsed = localStorage.getItem('miniTimerElapsed');
-            const savedIsRunning = localStorage.getItem('miniTimerRunning');
-            const savedStartTime = localStorage.getItem('miniTimerStart');
+            const savedElapsed = localStorage.getItem(STORAGE_KEY_ELAPSED);
+            const savedIsRunning = localStorage.getItem(STORAGE_KEY_RUNNING);
+            const savedStartTime = localStorage.getItem(STORAGE_KEY_START);
 
             if (savedElapsed) elapsedTime = parseInt(savedElapsed);
 
@@ -189,9 +189,9 @@
             stopTimer();
             elapsedTime = 0;
             displayTime(0);
-            localStorage.removeItem('miniTimerElapsed');
-            localStorage.removeItem('miniTimerRunning');
-            localStorage.removeItem('miniTimerStart');
+            localStorage.removeItem(STORAGE_KEY_ELAPSED);
+            localStorage.removeItem(STORAGE_KEY_RUNNING);
+            localStorage.removeItem(STORAGE_KEY_START);
         }
 
         function updateTime() {
@@ -213,9 +213,9 @@
         }
 
         function saveState() {
-            localStorage.setItem('miniTimerElapsed', elapsedTime);
-            localStorage.setItem('miniTimerRunning', isRunning);
-            localStorage.setItem('miniTimerStart', startTime);
+            localStorage.setItem(STORAGE_KEY_ELAPSED, elapsedTime);
+            localStorage.setItem(STORAGE_KEY_RUNNING, isRunning);
+            localStorage.setItem(STORAGE_KEY_START, startTime);
         }
     </script>
 </body>
