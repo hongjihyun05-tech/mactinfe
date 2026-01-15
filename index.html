@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medium Study Timer</title>
+    <title>Study Timer (200px)</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/galmuri@latest/dist/galmuri.css">
     <style>
         :root {
@@ -25,56 +25,55 @@
             user-select: none;
         }
 
-        /* 윈도우 창 (1.5배 확대: 180px -> 270px) */
+        /* 윈도우 창 (너비 200px 설정) */
         .window {
-            width: 270px;
+            width: 200px;
             background: var(--bg-color);
             border: 1px solid var(--border-color);
-            border-radius: 16px; /* 모서리 곡률도 조정 */
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+            border-radius: 12px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
             overflow: hidden;
             display: flex;
             flex-direction: column;
         }
 
-        /* 상단 바 (높이 확대: 24px -> 36px) */
+        /* 상단 바 */
         .title-bar {
-            height: 36px;
+            height: 28px;
             background: var(--bar-color);
             display: flex;
             align-items: center;
-            padding: 0 12px;
+            padding: 0 10px;
             justify-content: space-between;
         }
 
         .traffic-lights {
             display: flex;
-            gap: 8px;
+            gap: 6px;
         }
 
-        /* 신호등 크기 확대 (8px -> 12px) */
-        .dot { width: 12px; height: 12px; border-radius: 50%; }
+        .dot { width: 9px; height: 9px; border-radius: 50%; }
         .red { background-color: #ff5f57; }
         .yellow { background-color: #ffbd2e; }
         .green { background-color: #27c93f; }
 
         .refresh-btn {
             cursor: pointer;
-            font-size: 16px;
+            font-size: 13px;
             color: #888;
         }
 
         /* 내용 영역 */
         .content {
-            padding: 20px 10px;
+            padding: 18px 10px;
             text-align: center;
             background: #fff;
         }
 
-        /* 타이머 텍스트 (36px -> 54px) */
+        /* 타이머 텍스트 (200px에 맞게 조정) */
         .timer-display {
-            font-size: 54px;
-            margin: 5px 0 20px 0;
+            font-size: 40px;
+            margin: 5px 0 18px 0;
             color: #333;
             letter-spacing: 1px;
             font-weight: normal;
@@ -84,16 +83,16 @@
         .btn-group {
             display: flex;
             justify-content: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         button {
             font-family: 'Galmuri14', sans-serif;
             background: var(--bar-color);
             border: none;
-            border-radius: 10px;
-            padding: 10px 16px; /* 패딩 확대 */
-            font-size: 16px;    /* 글자 크기 확대 */
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 12px;
             color: #555;
             cursor: pointer;
             transition: all 0.2s;
@@ -141,10 +140,10 @@
         const btnStart = document.getElementById('btn-start');
         const btnStop = document.getElementById('btn-stop');
 
-        // 상태 저장 키 이름 변경 (크기 변경 시 기존 데이터 꼬임 방지)
-        const STORAGE_KEY_ELAPSED = 'mediumTimerElapsed';
-        const STORAGE_KEY_RUNNING = 'mediumTimerRunning';
-        const STORAGE_KEY_START = 'mediumTimerStart';
+        // 상태 저장 키 (200px 버전용)
+        const STORAGE_KEY_ELAPSED = 'timer200Elapsed';
+        const STORAGE_KEY_RUNNING = 'timer200Running';
+        const STORAGE_KEY_START = 'timer200Start';
 
         window.onload = function() {
             const savedElapsed = localStorage.getItem(STORAGE_KEY_ELAPSED);
